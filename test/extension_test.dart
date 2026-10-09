@@ -30,8 +30,10 @@ void main() {
     setUp(() {
       mockStorage = MockStorage();
       logBox = LogBox(storage: mockStorage);
-      
-      registerFallbackValue(NavigationEntryModel(action: NavigationAction.push));
+
+      registerFallbackValue(
+        NavigationEntryModel(action: NavigationAction.push),
+      );
     });
 
     test('observer returns LogBoxNavigatorObserver', () {
@@ -42,7 +44,7 @@ void main() {
     test('observer onEvent skips when route is in known routes', () {
       logBox.routes['test'] = const RouteSettings(name: 'test');
       final observer = logBox.observer as LogBoxNavigatorObserver;
-      
+
       final event = NavigationEntryModel(
         action: NavigationAction.push,
         route: 'test',
@@ -56,7 +58,7 @@ void main() {
     test('observer onEvent skips when previousRoute is in known routes', () {
       logBox.routes['prev'] = const RouteSettings(name: 'prev');
       final observer = logBox.observer as LogBoxNavigatorObserver;
-      
+
       final event = NavigationEntryModel(
         action: NavigationAction.push,
         route: 'new',
@@ -70,7 +72,7 @@ void main() {
 
     test('observer onEvent adds to storage when not skipped', () {
       final observer = logBox.observer as LogBoxNavigatorObserver;
-      
+
       final event = NavigationEntryModel(
         action: NavigationAction.push,
         route: 'new_route',
@@ -85,7 +87,7 @@ void main() {
 
     test('observer onEvent uses and updates _prevRouteName', () {
       final observer = logBox.observer as LogBoxNavigatorObserver;
-      
+
       // First event to set _prevRouteName
       final event1 = NavigationEntryModel(
         action: NavigationAction.push,
@@ -100,10 +102,12 @@ void main() {
         route: 'route2',
         previousRoute: null,
       );
-      
+
       observer.onEvent(event2);
 
-      final captured = verify(() => mockStorage.add(log: captureAny(named: 'log'))).captured;
+      final captured = verify(
+        () => mockStorage.add(log: captureAny(named: 'log')),
+      ).captured;
       final capturedLog = captured.last as NavigationEntryModel;
       expect(capturedLog.previousRoute, 'route1');
     });

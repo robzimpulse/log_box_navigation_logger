@@ -43,7 +43,7 @@ void main() {
       final json = model.toJson();
       expect(json['action'], 'push');
       expect(json['route'], '/home');
-      
+
       final fromJson = NavigationEntryModel.fromJson(json);
       expect(fromJson.id, model.id);
       expect(fromJson.action, model.action);
@@ -54,23 +54,31 @@ void main() {
     });
 
     testWidgets('tabs returns Overview and Detail', (tester) async {
-      await tester.pumpWidget(MaterialApp(
-        home: Builder(builder: (context) {
-          final tabs = model.tabs(context);
-          expect(tabs.length, 2);
-          expect(tabs.keys.first.text, 'Overview');
-          expect(tabs.keys.last.text, 'Detail');
-          return Container();
-        }),
-      ));
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Builder(
+            builder: (context) {
+              final tabs = model.tabs(context);
+              expect(tabs.length, 2);
+              expect(tabs.keys.first.text, 'Overview');
+              expect(tabs.keys.last.text, 'Detail');
+              return Container();
+            },
+          ),
+        ),
+      );
     });
 
     testWidgets('title returns rich text for each action', (tester) async {
       for (final action in NavigationAction.values) {
         final m = NavigationEntryModel(action: action, route: 'test');
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(body: Builder(builder: (context) => m.title(context))),
-        ));
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: Builder(builder: (context) => m.title(context)),
+            ),
+          ),
+        );
         expect(find.textContaining(action.name.toUpperCase()), findsOneWidget);
       }
     });
@@ -80,7 +88,7 @@ void main() {
       expect(model.contains('login'), isTrue);
       expect(model.contains('id'), isTrue);
       expect(model.contains('missing'), isFalse);
-      
+
       final mNull = NavigationEntryModel(action: NavigationAction.push);
       expect(mNull.contains('any'), isFalse);
     });

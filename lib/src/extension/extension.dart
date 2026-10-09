@@ -28,11 +28,9 @@ extension LogBoxNavigatorObserverExtension on LogBox {
 }
 
 extension RouteSettingArgumentExtension on RouteSettings {
-
   String? get argumentString {
     final arguments = this.arguments;
     if (arguments == null) return null;
     return jsonEncode(arguments);
   }
-
 }
