@@ -6,6 +6,7 @@ import 'package:log_box_navigation_logger/src/observer/log_box_navigator_observe
 import 'package:mocktail/mocktail.dart';
 
 class MockRoute extends Mock implements Route {}
+
 class MockRouteSettings extends Mock implements RouteSettings {}
 
 void main() {
@@ -14,10 +15,8 @@ void main() {
 
   setUp(() {
     events = [];
-    observer = LogBoxNavigatorObserver(
-      onEvent: (event) => events.add(event),
-    );
-    
+    observer = LogBoxNavigatorObserver(onEvent: (event) => events.add(event));
+
     registerFallbackValue(NavigationAction.push);
   });
 
@@ -26,8 +25,11 @@ void main() {
       final route = MockRoute();
       final prevRoute = MockRoute();
       final settings = const RouteSettings(name: 'new', arguments: 'arg');
-      final prevSettings = const RouteSettings(name: 'old', arguments: 'old_arg');
-      
+      final prevSettings = const RouteSettings(
+        name: 'old',
+        arguments: 'old_arg',
+      );
+
       when(() => route.settings).thenReturn(settings);
       when(() => prevRoute.settings).thenReturn(prevSettings);
 
@@ -44,9 +46,13 @@ void main() {
     test('didPop triggers onEvent', () {
       final route = MockRoute();
       final prevRoute = MockRoute();
-      
-      when(() => route.settings).thenReturn(const RouteSettings(name: 'pop_route'));
-      when(() => prevRoute.settings).thenReturn(const RouteSettings(name: 'prev_route'));
+
+      when(
+        () => route.settings,
+      ).thenReturn(const RouteSettings(name: 'pop_route'));
+      when(
+        () => prevRoute.settings,
+      ).thenReturn(const RouteSettings(name: 'prev_route'));
 
       observer.didPop(route, prevRoute);
 
@@ -59,9 +65,13 @@ void main() {
     test('didRemove triggers onEvent', () {
       final route = MockRoute();
       final prevRoute = MockRoute();
-      
-      when(() => route.settings).thenReturn(const RouteSettings(name: 'removed'));
-      when(() => prevRoute.settings).thenReturn(const RouteSettings(name: 'prev'));
+
+      when(
+        () => route.settings,
+      ).thenReturn(const RouteSettings(name: 'removed'));
+      when(
+        () => prevRoute.settings,
+      ).thenReturn(const RouteSettings(name: 'prev'));
 
       observer.didRemove(route, prevRoute);
 
@@ -74,9 +84,13 @@ void main() {
     test('didReplace triggers onEvent', () {
       final newRoute = MockRoute();
       final oldRoute = MockRoute();
-      
-      when(() => newRoute.settings).thenReturn(const RouteSettings(name: 'new_replace'));
-      when(() => oldRoute.settings).thenReturn(const RouteSettings(name: 'old_replace'));
+
+      when(
+        () => newRoute.settings,
+      ).thenReturn(const RouteSettings(name: 'new_replace'));
+      when(
+        () => oldRoute.settings,
+      ).thenReturn(const RouteSettings(name: 'old_replace'));
 
       observer.didReplace(newRoute: newRoute, oldRoute: oldRoute);
 
@@ -85,10 +99,10 @@ void main() {
       expect(events.first.route, 'new_replace');
       expect(events.first.previousRoute, 'old_replace');
     });
-    
+
     test('didReplace with null routes', () {
       observer.didReplace(newRoute: null, oldRoute: null);
-      
+
       expect(events.length, 1);
       expect(events.first.action, NavigationAction.replace);
       expect(events.first.route, isNull);
